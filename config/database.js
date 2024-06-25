@@ -1,10 +1,11 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize(process.env.MYSQL_ADDON_DB, process.env.MYSQL_ADDON_USER, process.env.MYSQL_ADDON_PASSWORD, {
-  host: process.env.MYSQL_ADDON_HOST,
+// Crée une instance de Sequelize
+const sequelize = new Sequelize('bvmk9uxv5t9nlp3jdbpd', 'uijcyzgobkiktddz', 'pxfLlz9wcstDCyDXH2sx', {
+  host: 'bvmk9uxv5t9nlp3jdbpd-mysql.services.clever-cloud.com',
   dialect: 'mysql',
-  port: process.env.MYSQL_ADDON_PORT,
-  logging: console.log, // Utiliser console.log pour le logging SQL
+  port: 3306,
+  logging: console.log, // Utilisez console.log pour le débogage
 });
 
 // Tester la connexion à la base de données
@@ -17,6 +18,3 @@ sequelize.authenticate()
   });
 
 module.exports = sequelize;
-
-
-
