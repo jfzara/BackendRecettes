@@ -1,6 +1,5 @@
 const { Sequelize } = require('sequelize');
 
-// Crée une instance de Sequelize avec les paramètres de connexion Clever Cloud
 const sequelize = new Sequelize(process.env.MYSQL_ADDON_DB, process.env.MYSQL_ADDON_USER, process.env.MYSQL_ADDON_PASSWORD, {
   host: process.env.MYSQL_ADDON_HOST,
   dialect: 'mysql',
@@ -18,5 +17,6 @@ sequelize.authenticate()
   });
 
 module.exports = sequelize;
+
 
 
