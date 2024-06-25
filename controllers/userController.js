@@ -5,7 +5,7 @@ const User = require('../models/user');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET is not defined. Please set it in your .env file.');
+  throw new Error('JWT_SECRET n\'est pas défini. Veuillez le définir dans votre fichier .env.');
 }
 
 // Inscription
@@ -16,7 +16,7 @@ const register = async (req, res) => {
     // Vérifier si l'utilisateur existe déjà
     const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {
-      return res.status(400).json({ error: 'Username already exists' });
+      return res.status(400).json({ error: 'Le nom d\'utilisateur existe déjà' });
     }
 
     // Hacher le mot de passe
@@ -30,8 +30,8 @@ const register = async (req, res) => {
 
     res.status(201).json(newUser);
   } catch (error) {
-    console.error('Error during registration:', error);
-    res.status(500).json({ error: 'An error occurred during registration', details: error.message });
+    console.error('Erreur lors de l inscription :', error);
+    res.status(500).json({ error: 'Une erreur est survenue lors de l inscription', details: error.message });
   }
 };
 
@@ -43,13 +43,13 @@ const login = async (req, res) => {
     // Trouver l'utilisateur par nom d'utilisateur
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
     // Comparer le mot de passe
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid password' });
+      return res.status(401).json({ error: 'Mot de passe invalide' });
     }
 
     // Générer un token JWT
@@ -57,8 +57,8 @@ const login = async (req, res) => {
 
     res.status(200).json({ token });
   } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ error: 'An error occurred during login', details: error.message });
+    console.error('Erreur lors de la connexion :', error);
+    res.status(500).json({ error: 'Une erreur est survenue lors de la connexion', details: error.message });
   }
 };
 

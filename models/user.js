@@ -12,7 +12,7 @@ const User = sequelize.define('User', {
     allowNull: false
   }
 }, {
-  timestamps: true // Cela ajoute les colonnes `createdAt` et `updatedAt`
+  timestamps: true
 });
 
 module.exports = User;

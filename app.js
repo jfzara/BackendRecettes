@@ -4,12 +4,12 @@ const cors = require('cors');
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const recipeRoutes = require('./routes/recipeRoutes');
-const errorHandler = require('./middlewares/errorHandler'); // Importer le middleware
+const errorHandler = require('./middlewares/errorHandler'); 
 
 const app = express();
 
 app.use(cors());
-app.use(express.json()); // Cette ligne est essentielle pour analyser les requêtes JSON
+app.use(express.json()); 
 
 app.use('/api/users', userRoutes);
 app.use('/api/recipes', recipeRoutes);
@@ -18,8 +18,8 @@ app.use('/api/recipes', recipeRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-
-sequelize.sync({ force: true }).then(() => { // Utiliser { force: true } pour recréer les tables (Attention: cela supprime les données existantes)
+ // force: true  pour recréer les tables 
+sequelize.sync({ force: true }).then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

@@ -1,15 +1,15 @@
 const Recipe = require('../models/recipe');
 const User = require('../models/user');
 
-// Create a new recipe
+// Création d'une nouvelle recette
 exports.createRecipe = async (req, res, next) => {
   try {
     const { name, ingredients, instructions, category, imageUrl, userId } = req.body;
 
-     // Valider l'ID de l'utilisateur
+    // Valider l'ID de l'utilisateur
     const user = await User.findByPk(userId);
     if (!user) {
-      const error = new Error('User not found');
+      const error = new Error("Utilisateur non trouvé");
       error.status = 404;
       throw error;
     }
@@ -26,26 +26,25 @@ exports.createRecipe = async (req, res, next) => {
 
     res.status(201).json(newRecipe);
   } catch (error) {
-	//Passer l'erreur au middleware de gestion des erreurs
-
+    // Passer l'erreur au middleware de gestion des erreurs
     next(error);
   }
 };
 
-//Récupération de Toutes les Recettes pour un Utilisateur Spécifique
+// Récupération de toutes les recettes pour un utilisateur spécifique
 exports.getRecipes = async (req, res, next) => {
   try {
     const { userId } = req.params;
 
-   // Valider l'ID de l'utilisateur
+    // Valider l'ID de l'utilisateur
     const user = await User.findByPk(userId);
     if (!user) {
-      const error = new Error('User not found');
+      const error = new Error("Utilisateur non trouvé");
       error.status = 404;
       throw error;
     }
 
-   // Récupérer les recettes
+    // Récupérer les recettes
     const recipes = await Recipe.findAll({ where: { userId } });
     res.status(200).json(recipes);
   } catch (error) {
@@ -53,7 +52,7 @@ exports.getRecipes = async (req, res, next) => {
   }
 };
 
-// Mise à jour d'une recette 
+// Mise à jour d'une recette
 exports.updateRecipe = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -62,27 +61,27 @@ exports.updateRecipe = async (req, res, next) => {
     // Valider l'ID de l'utilisateur
     const user = await User.findByPk(userId);
     if (!user) {
-      const error = new Error('User not found');
+      const error = new Error("Utilisateur non trouvé");
       error.status = 404;
       throw error;
     }
 
-     // Trouver la recette par ID
+    // Trouver la recette par ID
     const recipe = await Recipe.findByPk(id);
     if (!recipe) {
-      const error = new Error('Recipe not found');
+      const error = new Error("Recette non trouvée");
       error.status = 404;
       throw error;
     }
 
-     // Vérifier que la recette appartient à l'utilisateur
+    // Vérifier que la recette appartient à l'utilisateur
     if (recipe.userId !== userId) {
-      const error = new Error('You do not have permission to update this recipe');
+      const error = new Error("Vous n'avez pas la permission de modifier cette recette");
       error.status = 403;
       throw error;
     }
 
-    // mettre à jour la recette
+    // Mettre à jour la recette
     recipe.name = name;
     recipe.ingredients = ingredients;
     recipe.instructions = instructions;
@@ -92,7 +91,7 @@ exports.updateRecipe = async (req, res, next) => {
     await recipe.save();
     res.status(200).json(recipe);
   } catch (error) {
-	// Passer l'erreur au middleware de gestion des erreurs
+    // Passer l'erreur au middleware de gestion des erreurs
     next(error);
   }
 };
@@ -106,28 +105,26 @@ exports.deleteRecipe = async (req, res, next) => {
     // Valider l'ID de l'utilisateur
     const user = await User.findByPk(userId);
     if (!user) {
-      const error = new Error('User not found');
+      const error = new Error("Utilisateur non trouvé");
       error.status = 404;
       throw error;
     }
 
-    
     // Trouver la recette par ID
     const recipe = await Recipe.findByPk(id);
     if (!recipe) {
-      const error = new Error('Recipe not found');
+      const error = new Error("Recette non trouvée");
       error.status = 404;
       throw error;
     }
 
     // Vérifier que la recette appartient à l'utilisateur
     if (recipe.userId !== userId) {
-      const error = new Error('You do not have permission to delete this recipe');
+      const error = new Error("Vous n'avez pas la permission de supprimer cette recette");
       error.status = 403;
       throw error;
     }
 
-    
     // Supprimer la recette
     await recipe.destroy();
     res.status(204).json();

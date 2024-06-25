@@ -5,16 +5,17 @@ const sequelize = new Sequelize('bvmk9uxv5t9nlp3jdbpd', 'uijcyzgobkiktddz', 'pxf
   host: 'bvmk9uxv5t9nlp3jdbpd-mysql.services.clever-cloud.com',
   dialect: 'mysql',
   port: 3306,
-  logging: console.log, // Utilisez console.log pour le débogage
+  // Utilisez console.log pour le débogage
+  logging: console.log, 
 });
 
 // Tester la connexion à la base de données
 sequelize.authenticate()
   .then(() => {
-    console.log('Connection has been established successfully.');
+    console.log('La connexion a été établie avec succès.');
   })
   .catch(err => {
-    console.error('Unable to connect to the database:', err.message);
+    console.error('Impossible de se connecter à la base de données :', err.message);
   });
 
 module.exports = sequelize;
