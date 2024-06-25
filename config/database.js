@@ -1,12 +1,11 @@
 const { Sequelize } = require('sequelize');
 
-// Crée une instance de Sequelize
-const sequelize = new Sequelize('recipe_management', 'root', 'root', {
-  host: 'localhost',
+// Crée une instance de Sequelize avec les paramètres de connexion Clever Cloud
+const sequelize = new Sequelize(process.env.MYSQL_ADDON_DB, process.env.MYSQL_ADDON_USER, process.env.MYSQL_ADDON_PASSWORD, {
+  host: process.env.MYSQL_ADDON_HOST,
   dialect: 'mysql',
-    // le logging sql pour le débogage
-  logging: true,
- 
+  port: process.env.MYSQL_ADDON_PORT,
+  logging: console.log, // Utiliser console.log pour le logging SQL
 });
 
 // Tester la connexion à la base de données
@@ -19,4 +18,5 @@ sequelize.authenticate()
   });
 
 module.exports = sequelize;
+
 

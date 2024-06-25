@@ -22,7 +22,16 @@ const Recipe = sequelize.define('Recipe', {
   imageUrl: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,
+      key: 'id'
+    }
   }
+}, {
+  timestamps: true
 });
 
 Recipe.belongsTo(User, { foreignKey: 'userId' });
