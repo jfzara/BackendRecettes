@@ -1,134 +1,78 @@
 const Recipe = require('../models/recipe');
-const User = require('../models/user');
 
-// Création d'une nouvelle recette
-exports.createRecipe = async (req, res, next) => {
+const createRecipe = async (req, res) => {
+  const { name, ingredients, instructions, category, imageUrl } = req.body;
   try {
-    const { name, ingredients, instructions, category, imageUrl, userId } = req.body;
-
-    // Valider l'ID de l'utilisateur
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const error = new Error("Utilisateur non trouvé");
-      error.status = 404;
-      throw error;
-    }
-
-    // Créer une nouvelle recette
     const newRecipe = await Recipe.create({
       name,
       ingredients,
       instructions,
       category,
       imageUrl,
-      userId
+      userId: req.user.id, // Assurez-vous que req.user.id est défini via le middleware d'authentification
     });
-
     res.status(201).json(newRecipe);
   } catch (error) {
-    // Passer l'erreur au middleware de gestion des erreurs
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Récupération de toutes les recettes pour un utilisateur spécifique
-exports.getRecipes = async (req, res, next) => {
+const getRecipes = async (req, res) => {
   try {
-    const { userId } = req.params;
-
-    // Valider l'ID de l'utilisateur
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const error = new Error("Utilisateur non trouvé");
-      error.status = 404;
-      throw error;
-    }
-
-    // Récupérer les recettes
-    const recipes = await Recipe.findAll({ where: { userId } });
+    console.log('Fetching recipes...');
+    const recipes = await Recipe.findAll({ where: { userId: req.user.id } });
     res.status(200).json(recipes);
   } catch (error) {
-    next(error);
+    console.error('Error fetching recipes:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Mise à jour d'une recette
-exports.updateRecipe = async (req, res, next) => {
+const getRecipe = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const { name, ingredients, instructions, category, imageUrl, userId } = req.body;
-
-    // Valider l'ID de l'utilisateur
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const error = new Error("Utilisateur non trouvé");
-      error.status = 404;
-      throw error;
-    }
-
-    // Trouver la recette par ID
-    const recipe = await Recipe.findByPk(id);
+    const recipe = await Recipe.findOne({ where: { id, userId: req.user.id } });
     if (!recipe) {
-      const error = new Error("Recette non trouvée");
-      error.status = 404;
-      throw error;
+      return res.status(404).json({ message: 'Recipe not found' });
     }
+    res.status(200).json(recipe);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-    // Vérifier que la recette appartient à l'utilisateur
-    if (recipe.userId !== userId) {
-      const error = new Error("Vous n'avez pas la permission de modifier cette recette");
-      error.status = 403;
-      throw error;
+const updateRecipe = async (req, res) => {
+  const { id } = req.params;
+  const { name, ingredients, instructions, category, imageUrl } = req.body;
+  try {
+    const recipe = await Recipe.findOne({ where: { id, userId: req.user.id } });
+    if (!recipe) {
+      return res.status(404).json({ message: 'Recipe not found' });
     }
-
-    // Mettre à jour la recette
     recipe.name = name;
     recipe.ingredients = ingredients;
     recipe.instructions = instructions;
     recipe.category = category;
     recipe.imageUrl = imageUrl;
-
     await recipe.save();
     res.status(200).json(recipe);
   } catch (error) {
-    // Passer l'erreur au middleware de gestion des erreurs
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Suppression d'une recette
-exports.deleteRecipe = async (req, res, next) => {
+const deleteRecipe = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const { userId } = req.body;
-
-    // Valider l'ID de l'utilisateur
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const error = new Error("Utilisateur non trouvé");
-      error.status = 404;
-      throw error;
-    }
-
-    // Trouver la recette par ID
-    const recipe = await Recipe.findByPk(id);
+    const recipe = await Recipe.findOne({ where: { id, userId: req.user.id } });
     if (!recipe) {
-      const error = new Error("Recette non trouvée");
-      error.status = 404;
-      throw error;
+      return res.status(404).json({ message: 'Recipe not found' });
     }
-
-    // Vérifier que la recette appartient à l'utilisateur
-    if (recipe.userId !== userId) {
-      const error = new Error("Vous n'avez pas la permission de supprimer cette recette");
-      error.status = 403;
-      throw error;
-    }
-
-    // Supprimer la recette
     await recipe.destroy();
-    res.status(204).json();
+    res.status(204).end();
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
+
+module.exports = { createRecipe, getRecipes, getRecipe, updateRecipe, deleteRecipe };

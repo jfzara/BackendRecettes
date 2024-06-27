@@ -1,12 +1,5 @@
-const errorHandler = (err, req, res, next) => {
+app.use((err, req, res, next) => {
 	console.error(err.stack);
-  
-	res.status(err.status || 500).json({
-	  erreur: {
-		message: err.message || 'Une erreur inattendue est survenue',
-	  },
-	});
-  };
-  
-  module.exports = errorHandler;
+	res.status(500).json({ error: 'Something went wrong!' });
+  });
   

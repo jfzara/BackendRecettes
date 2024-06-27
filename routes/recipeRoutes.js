@@ -1,17 +1,12 @@
 const express = require('express');
-// Importation des contrôleurs pour les recettes
-const { createRecipe, getRecipes, updateRecipe, deleteRecipe } = require('../controllers/recipeController');
-// Importation du middleware d'authentification
-const authenticateToken = require('../middlewares/authMiddleware');
+const { createRecipe, getRecipes, getRecipe, updateRecipe, deleteRecipe } = require('../controllers/recipeController');
 const router = express.Router();
-// Route pour créer une nouvelle recette
-router.post('/', authenticateToken, createRecipe);
-// Route pour récupérer toutes les recettes d'un utilisateur spécifique
-router.get('/:userId', authenticateToken, getRecipes);
-// Route pour mettre à jour une recette existante
-router.put('/:id', authenticateToken, updateRecipe);
-// Route pour supprimer une recette existante
-router.delete('/:id', authenticateToken, deleteRecipe);
+
+router.post('/', createRecipe); // Pour ajouter une recette
+router.get('/', getRecipes); // Pour récupérer toutes les recettes
+router.get('/:id', getRecipe); // Pour récupérer une recette spécifique
+router.put('/:id', updateRecipe); // Pour mettre à jour une recette
+router.delete('/:id', deleteRecipe); // Pour supprimer une recette
 
 module.exports = router;
 

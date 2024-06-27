@@ -1,21 +1,14 @@
 const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
-// Crée une instance de Sequelize
-const sequelize = new Sequelize('bvmk9uxv5t9nlp3jdbpd', 'uijcyzgobkiktddz', 'pxfLlz9wcstDCyDXH2sx', {
-  host: 'bvmk9uxv5t9nlp3jdbpd-mysql.services.clever-cloud.com',
-  dialect: 'mysql',
-  port: 3306,
-  // Utilisez console.log pour le débogage
-  logging: console.log, 
+console.log('Database Host:', process.env.DB_HOST);
+console.log('Database User:', process.env.DB_USER);
+console.log('Database Name:', process.env.DB_NAME);
+
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
+  host: process.env.DB_HOST,
+  dialect: 'mysql'
 });
 
-// Tester la connexion à la base de données
-sequelize.authenticate()
-  .then(() => {
-    console.log('La connexion a été établie avec succès.');
-  })
-  .catch(err => {
-    console.error('Impossible de se connecter à la base de données :', err.message);
-  });
-
 module.exports = sequelize;
+
